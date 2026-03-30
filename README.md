@@ -1,4 +1,3 @@
-# ATT&CK_Tracker
 # 🏦 ATT&CK Tracker
 
 > A Python-based threat hunting toolkit that automatically maps MITRE ATT&CK techniques used by APT groups targeting the **Financial Services** sector — and generates ready-to-use hunting playbooks for SOC analysts.
