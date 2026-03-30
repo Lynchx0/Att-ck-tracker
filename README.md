@@ -1,22 +1,34 @@
 # ATT&CK_Tracker
-# 🏦 Financial Sector Threat Hunting Playbooks (MITRE ATT&CK)
+# 🏦 ATT&CK Tracker
 
-> Threat hunting playbooks mapped to MITRE ATT&CK techniques used by APT groups targeting the **Financial Services** sector.
+> A Python-based threat hunting toolkit that automatically maps MITRE ATT&CK techniques used by APT groups targeting the **Financial Services** sector — and generates ready-to-use hunting playbooks for SOC analysts.
+
+![Python](https://img.shields.io/badge/Python-3.7+-blue)
+![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-red)
+![Sector](https://img.shields.io/badge/Sector-Financial%20Services-green)
+![No Dependencies](https://img.shields.io/badge/Dependencies-None-brightgreen)
 
 ---
 
 ## 📌 What is this?
 
-This project automatically pulls all MITRE ATT&CK techniques used by known finance-targeting threat groups (FIN7, Carbanak, Lazarus, Silence, Cobalt Group, etc.) and builds structured hunting playbooks for each one.
+**ATT&CK Tracker** is a threat hunting toolkit built for SOC analysts and IR teams working in banking and financial institutions.
+
+It automatically:
+- 🔍 Pulls the latest MITRE ATT&CK data and detects all APT groups targeting Finance
+- 📄 Generates a structured hunting playbook for each technique (Splunk, QRadar, Elastic)
+- 📊 Builds a coverage matrix showing what you have and what gaps remain
+
+No API keys. No external dependencies. Just Python.
 
 **Built for:** SOC Analysts, Threat Hunters, IR teams in Banking & Financial institutions.
 
 ---
 
-## 🎯 Tracked Finance-Targeting Groups
+## 🎯 Tracked Finance-Targeting APT Groups
 
 | Group ID | Name | Known For |
-|----------|------|-----------|
+|---|---|---|
 | G0046 | FIN7 | POS malware, spear-phishing banks |
 | G0008 | Carbanak | SWIFT fraud, bank heists |
 | G0032 | Lazarus Group | SWIFT attacks, crypto theft |
@@ -27,20 +39,27 @@ This project automatically pulls all MITRE ATT&CK techniques used by known finan
 | G0085 | FIN4 | Financial insider trading |
 | G0083 | SilverTerrier | BEC against finance |
 
+> ⚡ Groups are **auto-detected** from MITRE STIX data — new APTs added by MITRE will appear automatically on the next run.
+
 ---
 
 ## 🗂 Project Structure
 
 ```
-finance-hunting-playbooks/
+ATT&CK-Tracker/
 ├── scripts/
-│   ├── fetch_finance_techniques.py   # Step 1: Pull techniques from MITRE
-│   └── generate_playbooks.py         # Step 2: Generate playbook per technique (coming soon)
+│   ├── ATT&CK_Tracker.py       # Phase 1 — Fetch Finance techniques from MITRE
+│   ├── generate_playbooks.py   # Phase 2 — Generate Markdown playbook per technique
+│   └── coverage_matrix.py      # Phase 3 — Build coverage matrix & gap analysis
 ├── playbooks/
-│   └── <TXXXX>_<technique_name>.md  # Auto-generated playbooks
+│   ├── INDEX.md                # Master index of all playbooks
+│   └── T*.md                   # One playbook per technique (auto-generated)
 ├── output/
-│   ├── finance_techniques.json       # Raw technique data
-│   └── finance_techniques.csv        # Spreadsheet-friendly view
+│   ├── finance_techniques.json  # Raw technique data
+│   ├── finance_techniques.csv   # Spreadsheet-friendly view
+│   ├── finance_groups_found.txt # Detection log of identified APT groups
+│   ├── coverage_matrix.md       # Full coverage report
+│   └── coverage_summary.json    # Machine-readable coverage summary
 └── README.md
 ```
 
@@ -50,64 +69,74 @@ finance-hunting-playbooks/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/finance-hunting-playbooks.git
-cd finance-hunting-playbooks
+git clone https://github.com/YOUR_USERNAME/ATT-CK-Tracker.git
+cd ATT-CK-Tracker
 
-# 2. Install dependencies (none required — uses stdlib only)
-python3 --version  # requires Python 3.7+
+# 2. No dependencies needed — uses Python stdlib only
+python3 --version  # Python 3.7+ required
 
-# 3. Fetch Finance techniques from MITRE
-python3 scripts/fetch_finance_techniques.py
+# 3. Phase 1 — Fetch Finance techniques from MITRE
+python3 scripts/ATT\&CK_Tracker.py
 
-# 4. Check output
-cat output/finance_techniques.csv
+# 4. Phase 2 — Generate hunting playbooks
+python3 scripts/generate_playbooks.py
+
+# 5. Phase 3 — Build coverage matrix
+python3 scripts/coverage_matrix.py
 ```
 
 ---
 
-## 📊 Sample Output
+## 📄 Playbook Format
+
+Each technique gets a dedicated Markdown playbook with:
 
 ```
-technique_id  name                          tactics           finance_groups
-T1566.001     Spearphishing Attachment      Initial Access    FIN7, Carbanak, Lazarus Group
-T1055         Process Injection             Defense Evasion   FIN7, Silence, Cobalt Group
-T1078         Valid Accounts                Persistence       Carbanak, FIN6, Lazarus Group
-T1003         OS Credential Dumping         Credential Access FIN7, Cobalt Group, Silence
+T1566.001 — Spearphishing Attachment
+├── Overview       (technique ID, tactic, platforms, APT groups)
+├── Hunting Queries
+│   ├── Splunk
+│   ├── QRadar (AQL)
+│   └── Elastic (EQL/KQL)
+├── Log Sources Required
+├── Finance Groups Using This Technique
+└── Response Steps
+```
+
+**Example hunting query (Splunk):**
+```spl
+index=email_logs attachment_name IN ("*.doc","*.xls","*.js","*.vbs","*.hta")
+| stats count by src_user, attachment_name, subject
 ```
 
 ---
 
-## 🛡 Playbook Format (coming in next phase)
+## 📊 Coverage Matrix Output
 
-Each technique gets a playbook with:
+After running Phase 3, you get a full coverage report:
 
-```markdown
-## T1566.001 — Spearphishing Attachment
-
-### 🎯 Hypothesis
-Threat actor sends malicious email attachments to gain initial access
-
-### 🔍 Hunting Queries
-**Splunk:**  index=email_logs attachment_type IN ("doc","xls","js","vbs")
-**KQL:**     EmailAttachmentInfo | where FileType in ("doc","xls","js")
-
-### 📋 Log Sources Required
-- Email gateway logs
-- Endpoint EDR logs
-
-### ✅ Response Steps
-1. Isolate affected endpoint
-2. Extract attachment for sandbox analysis
-3. Search for lateral movement from same host
 ```
+✅ Initial Access      ████████████░░░  80%  (8/10)
+✅ Execution           ██████████░░░░░  65%  (5/8)
+⚠️  Persistence        ██████░░░░░░░░░  40%  (3/8)
+❌ Reconnaissance     ░░░░░░░░░░░░░░░   0%  (0/5) ← GAP
+
+Overall Coverage: 62%  |  Techniques: 45 covered / 73 total
+```
+
+The report highlights:
+- ✅ Tactics with good coverage (60%+)
+- ⚠️ Tactics needing more playbooks (30-59%)
+- ❌ Gaps with zero coverage
 
 ---
 
 ## 🔗 References
 
 - [MITRE ATT&CK Enterprise](https://attack.mitre.org/)
-- [FS-ISAC Threat Intelligence](https://www.fsisac.com/)
 - [MITRE CTI GitHub](https://github.com/mitre/cti)
+- [FS-ISAC Threat Intelligence](https://www.fsisac.com/)
+- [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)
 
 ---
 
