@@ -11,7 +11,7 @@
 
 ## 📌 What is this?
 
-**ATT&CK Tracker** is a threat hunting toolkit built for SOC analysts and IR teams working in banking and financial institutions.
+**ATT&CK Tracker** is a Threat Intelligence toolkit built for SOC analysts and IR teams working in banking and financial institutions.
 
 It automatically:
 - 🔍 Pulls the latest MITRE ATT&CK data and detects all APT groups targeting Finance
