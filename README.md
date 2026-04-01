@@ -42,28 +42,6 @@ No API keys. No external dependencies. Just Python.
 
 ---
 
-## 🗂 Project Structure
-
-```
-ATT&CK-Tracker/
-├── scripts/
-│   ├── ATT&CK_Tracker.py       # Phase 1 — Fetch Finance techniques from MITRE
-│   ├── generate_playbooks.py   # Phase 2 — Generate Markdown playbook per technique
-│   └── coverage_matrix.py      # Phase 3 — Build coverage matrix & gap analysis
-├── playbooks/
-│   ├── INDEX.md                # Master index of all playbooks
-│   └── T*.md                   # One playbook per technique (auto-generated)
-├── output/
-│   ├── finance_techniques.json  # Raw technique data
-│   ├── finance_techniques.csv   # Spreadsheet-friendly view
-│   ├── finance_groups_found.txt # Detection log of identified APT groups
-│   ├── coverage_matrix.md       # Full coverage report
-│   └── coverage_summary.json    # Machine-readable coverage summary
-└── README.md
-```
-
----
-
 ## 🚀 Quick Start
 
 ```bash
