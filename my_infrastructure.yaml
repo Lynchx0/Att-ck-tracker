@@ -1,0 +1,36 @@
+# ═══════════════════════════════════════════════
+#   ATT&CK Tracker — Infrastructure Profile
+#   Fill this file based on your environment
+#   then run: python scripts/infrastructure_filter.py
+# ═══════════════════════════════════════════════
+
+# ── Operating Systems ───────────────────────────
+# Options: Windows, Linux, macOS, Android, iOS
+platforms:
+  - Windows
+  - macOS
+
+# ── Key Services / Technologies ─────────────────
+# Add whatever is running in your environment
+services:
+  - Active Directory
+  - MSSQL
+  - Exchange
+
+# ── SIEM ────────────────────────────────────────
+# Options: Splunk, QRadar, Elastic
+siem: Elastic
+
+# ── Network ─────────────────────────────────────
+# Options: on-premise, cloud, hybrid
+network_type: on-premise
+
+# ── Network Devices & Access Points ─────────────
+# Add your network devices
+network_devices:
+  - Firewall
+  - Wireless Access Points
+  - Aruba
+  - Cisco
+  - Printers
+  - Switches
